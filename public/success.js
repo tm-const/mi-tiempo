@@ -127,7 +127,6 @@ function startClientTimer(duration) {
 }
 
 // Check if the server timer has already started
-
 fetch('/get-server-timer-state')
     .then(response => response.json())
     .then(serverTimerState => {
