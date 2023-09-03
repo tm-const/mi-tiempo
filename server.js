@@ -13,7 +13,6 @@ const YOUR_DOMAIN = process.env.YOUR_DOMAIN;
 app.post('/create-checkout-session', async (req, res) => {
   const dynamicPrice = parseFloat(req.body.price); // Extract the price from the form data
   const dynamicDuration = req.body.duration; // Extract the price from the form data
-  
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['cashapp'],
     line_items: [
@@ -48,13 +47,9 @@ app.get('/retrieve-session', async (req, res) => {
   res.json(session);
 });
 
-// End
-// ------------------------------------------------------------
-// Start
-
-// Store the server timer state (duration) globally
+// Initialize server timer state
 let serverTimerDuration = 0;
-
+let isServerTimerRunning = false;
 let serverTimerInterval;
 
 // Function to start the server timer
@@ -83,7 +78,7 @@ app.get('/get-server-timer-state', (req, res) => {
 
 // Endpoint to update the server timer state (called when the "Start Countdown" button is clicked)
 app.get('/start-server-timer', (req, res) => {
-  const days = 3; // Replace with your desired countdown duration
+  const days = 2; // Replace with your desired countdown duration
   const hours = 1;
   const minutes = 3;
   const seconds = 50;
@@ -116,6 +111,5 @@ app.get('/reset-timer', (req, res) => {
   clearInterval(serverTimerInterval); // Clear the timer interval
   res.send('Timer reset on the server.');
 });
-
 
 app.listen(4242, () => console.log('Running on port 4242'));
