@@ -8,11 +8,17 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true })); // Parse form data
 
+// Define global variables
 const YOUR_DOMAIN = process.env.YOUR_DOMAIN;
+let globalDynamicDuration = [];
 
 app.post('/create-checkout-session', async (req, res) => {
   const dynamicPrice = parseFloat(req.body.price); // Extract the price from the form data
   const dynamicDuration = req.body.duration; // Extract the price from the form data
+
+  const dynamicDuration2 = req.body.duration.split(',').map(value => parseInt(value.trim())); // Extract as an array of numbers
+  globalDynamicDuration = dynamicDuration2;
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['cashapp'],
     line_items: [
@@ -68,23 +74,32 @@ function startServerTimer(days, hours, minutes, seconds) {
   }, 1000);
 }
 
-// Ensure that the server timer is started initially (You can adjust the initial duration as needed)
-startServerTimer(2, 1, 3, 50);
+// Ensure that the server timer is started initially
+var durationInit = globalDynamicDuration;
+const daysX = durationInit[0]; // Replace with your desired countdown duration
+const hoursX = durationInit[1];
+const minutesX = durationInit[2];
+const secondsX = durationInit[3];
+startServerTimer(daysX, hoursX, minutesX, secondsX);
 
 // Endpoint to get the server timer state
 app.get('/get-server-timer-state', (req, res) => {
-  res.json({ timerDuration: serverTimerDuration, isTimerRunning: isServerTimerRunning });
+  res.json({ 
+    timerDuration: serverTimerDuration, 
+    isTimerRunning: isServerTimerRunning 
+  });
 });
 
 // Endpoint to update the server timer state (called when the "Start Countdown" button is clicked)
 app.get('/start-server-timer', (req, res) => {
-  const days = 2; // Replace with your desired countdown duration
-  const hours = 1;
-  const minutes = 3;
-  const seconds = 50;
+  var globalDynamicDurationArr = globalDynamicDuration;
+  const days = globalDynamicDurationArr[0]; // Replace with your desired countdown duration
+  const hours = globalDynamicDurationArr[1];
+  const minutes = globalDynamicDurationArr[2];
+  const seconds = globalDynamicDurationArr[3];
   startServerTimer(days, hours, minutes, seconds);
 
-  res.send('Server timer started');
+  res.send('Server timer startedx | ' + globalDynamicDuration + " | " + globalDynamicDurationArr);
 });
 
 // Route to pause the timer on the server
