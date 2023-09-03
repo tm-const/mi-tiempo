@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Buttons with Values</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <!-- Buttons to select different timers -->
+  <button data-duration="2, 1, 3, 50" data-cost="130.00">2d 1h 3m 50s</button>
+  <button data-duration="0, 3, 3, 50" data-cost="30.00">0d 3h 3m 50s</button>
+  <button data-duration="0, 0, 30, 0" data-cost="20.00">0d 0h 30m 0s</button>
+  <button data-duration="0, 0, 15, 0" data-cost="10.00">0d 0h 15m 0s</button>
+  <button data-duration="0, 1, 0, 0" data-cost="5.00">0d 1h 0m 0s</button>
+
+  <!-- Booking overview section -->
+  <div id="step2" class="confirmation">
+    <h1>Booking overview</h1>
+    <p class="date"></p>
+    <p class="duration">Duration:</p>
+    <p class="cost">Cost:</p>
+  </div>
+
+  <form action="/create-checkout-session" method="POST" id="checkout-form" style="display: none;">
+    <!-- Include other form fields if needed -->
+    <input type="hidden" name="price" id="price-input" value=""> <!-- Hidden field to store the dynamic price -->
+    <input type="hidden" name="duration" id="duration-input" value=""> <!-- Hidden field to store the dynamic duration -->
+    <button type="submit" id="checkout-button">Checkout</button>
+  </form>
+
+  <script src="dev-triggers.js"></script>
+  <script src="timer.js"></script>
+</body>
+</html>

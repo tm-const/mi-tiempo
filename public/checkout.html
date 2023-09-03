@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Buy cool new product</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <section>
+      <div class="product">
+        <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />
+        <div class="description">
+          <h3>Stubborn Attachments</h3>
+          <h5>$30.00</h5>
+        </div>
+      </div>
+      <form action="/create-checkout-session" method="POST">
+        <!-- Include other form fields if needed -->
+        <input type="hidden" name="price" id="price-input" value="30.00"> <!-- Hidden field to store the dynamic price -->
+        <input type="hidden" name="duration" id="duration-input" value=""> <!-- Hidden field to store the dynamic duration -->
+        <button type="submit" id="checkout-button">Checkout</button>
+      </form>
+    </section>
+
+    <script>
+      // Assuming you have a way to dynamically update the price
+      const dynamicPrice = 40.00; // Replace with your dynamic price
+
+      // Update the hidden input field with the dynamic price
+      document.getElementById('price-input').value = dynamicPrice;
+    </script>
+  </body>
+</html>

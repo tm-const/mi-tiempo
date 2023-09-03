@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer Example</title>
+</head>
+<body>
+    <div id="timer-display">
+        Timer: <span id="timer">00:00:00</span>
+    </div>
+    <button id="start-button">Start Countdown</button>
+
+  <script>
+    const timerDisplay = document.getElementById('timer');
+    let timerInterval; // Reference to the setInterval function
+
+    // Function to format seconds as HH:MM:SS
+    function formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    }
+
+    // Function to update the timer display
+    function updateTimerDisplay(seconds) {
+        timerDisplay.textContent = formatTime(seconds);
+    }
+
+    // Function to start the client timer
+    function startClientTimer(duration) {
+        let totalSeconds = duration;
+
+        function updateAndDisplayTime() {
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval); // Stop the timer
+                updateTimerDisplay(0); // Display 00:00:00 when timer expires
+            } else {
+                updateTimerDisplay(totalSeconds);
+                totalSeconds--;
+            }
+        }
+
+        updateAndDisplayTime(); // Initial display
+
+        timerInterval = setInterval(updateAndDisplayTime, 1000); // Update every second
+    }
+
+    // Check if the server timer has already started
+    fetch('/get-server-timer-state')
+        .then(response => response.json())
+        .then(serverTimerState => {
+            const startButton = document.getElementById('start-button');
+            if (serverTimerState && serverTimerState.timerDuration) {
+                // If the server timer state is available, start the client timer with the server's duration
+                startClientTimer(serverTimerState.timerDuration);
+                startButton.style.display = 'none';
+            } else {
+                // If the server timer has not started, display the start button
+                startButton.style.display = 'block';
+
+                // Event listener for the Start Countdown button
+                startButton.addEventListener('click', () => {
+                    // Start the client timer
+                    const initialDuration = 2 * 24 * 60 * 60 + 1 * 60 * 60 + 3 * 60 + 50; // Replace with your desired countdown duration
+                    startClientTimer(initialDuration);
+
+                    // Hide the start button after starting the timer
+                    startButton.style.display = 'none';
+                });
+            }
+        });
+  </script>
+</body>
+</html>
