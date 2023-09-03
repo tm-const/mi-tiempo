@@ -127,6 +127,7 @@ function startClientTimer(duration) {
 }
 
 // Check if the server timer has already started
+
 fetch('/get-server-timer-state')
     .then(response => response.json())
     .then(serverTimerState => {
@@ -139,7 +140,13 @@ fetch('/get-server-timer-state')
             // If the server timer has not started, display the start button
             startButton.style.display = 'block';
 
-            // Call the fetchData function when a button is clicked
-            fetchDuration();
+            // Event listener for the Start Countdown button
+            startButton.addEventListener('click', () => {
+                // Start the client timer
+                fetchDuration();
+
+                // Hide the start button after starting the timer
+                startButton.style.display = 'none';
+            });
         }
     });
